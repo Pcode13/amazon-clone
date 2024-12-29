@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useStateValue } from "./StateProvider";
 import "./Payment.css";
 import CheckoutProduct from "./CheckoutProduct";
+import { getBasketTotal } from "./reducer";
+import CurrencyFormat from "react-currency-format";
+
 function Payment() {
   const [{ basket, user }, dispatch] = useStateValue();
+  const [succeeded, setSucceeded] = useState(false);
+  const [processing, setProcessing] = useState("");
+  const [error, setError] = useState(null);
+  const [disabled, setDisabled] = useState(true);
+  const [clientSecret, setClientSecret] = useState(true);
+
   return (
     <div className="payment">
       <div className="payment__container">
@@ -41,7 +50,26 @@ function Payment() {
 
         <div className="payment__section">
           <div className="payment__title">
-            <h3>Payment Method</h3>
+            <div className="payment__details">
+              {/* Stripe magic will go */}
+
+              <form onSubmit={{}}>
+                <div className="payment__priceContainer">
+                  <CurrencyFormat
+                    renderText={(value) => <h3>Order Total: {value}</h3>}
+                    decimalScale={2}
+                    value={getBasketTotal(basket)}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"$"}
+                  />
+                  <button>Buy Now</button>
+                </div>
+
+                {/* Errors */}
+                {error && <div>{error}</div>}
+              </form>
+            </div>
           </div>
         </div>
       </div>
